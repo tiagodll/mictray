@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicTray - The Ultimate macOS Microphone Manager</title>
+    <meta name="description" content="MicTray sits in your macOS menu bar and provides an instant, visual, and highly accessible way to toggle your microphone volume effortlessly.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="blob-1 blob"></div>
+    <div class="blob-2 blob"></div>
+
+    <nav class="navbar">
+        <div class="logo">MicTray</div>
+        <div class="links">
+            <a href="#features">Features</a>
+            <a href="#how-to">How to Use</a>
+            <a href="https://github.com/tiagodll/mictray" class="btn-small">GitHub</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Stay Muted. <br><span class="gradient-text">Stay Safe.</span></h1>
+            <p class="hero-subtitle">The simplest, fastest tool for your macOS menu bar. Know instantly if your microphone is active and toggle it with a single click. No more "You're on mute!" or accidental broadcast.</p>
+            <div class="hero-actions">
+                <a href="#how-to" class="btn-primary">Get Started</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="glass-orb">
+                <img src="assets/graymic.png" alt="Muted Microphone" class="mic-img" id="hero-mic" />
+            </div>
+            <div class="status-indicator" id="hero-status">Currently Muted</div>
+        </div>
+    </header>
+
+    <section id="features" class="features">
+        <h2 class="section-title">Why MicTray?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔴</div>
+                <h3>Visual Peace of Mind</h3>
+                <p>A bright red icon lets you know exactly when your mic is hot. A subtle gray means you are safely muted.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡️</div>
+                <h3>One-Click Toggle</h3>
+                <p>Never scramble for the Zoom or Teams mute button again. Just click the tray icon to mute or unmute globally in an instant.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛠</div>
+                <h3>Deep OS Integration</h3>
+                <p>MicTray directly speaks to macOS via AppleScript to adjust the system-level input volume. It works universally across all your apps.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-to" class="how-to">
+        <h2 class="section-title">How to Install and Use</h2>
+        <div class="steps-container">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Build the Binary</h3>
+                <p>Open your terminal, navigate to the project directory, and compile the Go code directly.</p>
+                <div class="code-block">
+                    <code>git clone https://github.com/tiagodll/mictray<br>cd mictray<br>go build</code>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Run MicTray</h3>
+                <p>Launch the compiled binary from your terminal to see it appear in your macOS menu bar instantly.</p>
+                <div class="code-block">
+                    <code>./mictray</code>
+                </div>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Click and Control</h3>
+                <p>Left-click the icon to toggle your volume. Right-click or use the context menu to quit the application or view about details.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2026 Tiago Dall'igna - MicTray</p>
+    </footer>
+
+    <script>
+        // Hero visual toggle simulation to show how the app behaves
+        const heroMic = document.getElementById('hero-mic');
+        const heroStatus = document.getElementById('hero-status');
+        const glassOrb = document.querySelector('.glass-orb');
+        let isMuted = true;
+
+        setInterval(() => {
+            isMuted = !isMuted;
+            if (isMuted) {
+                heroMic.src = 'assets/graymic.png';
+                heroStatus.textContent = "Currently Muted";
+                heroStatus.style.color = "rgba(255,255,255,0.6)";
+                glassOrb.style.boxShadow = "0 20px 50px rgba(255, 255, 255, 0.05), inset 0 0 20px rgba(255, 255, 255, 0.05)";
+                glassOrb.style.borderColor = "rgba(255,255,255,0.1)";
+            } else {
+                heroMic.src = 'assets/redmic.png';
+                heroStatus.textContent = "Microphone Active";
+                heroStatus.style.color = "#ff4a4a";
+                glassOrb.style.boxShadow = "0 20px 60px rgba(255, 74, 74, 0.3), inset 0 0 30px rgba(255, 74, 74, 0.2)";
+                glassOrb.style.borderColor = "rgba(255, 74, 74, 0.4)";
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
