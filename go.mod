@@ -2,10 +2,7 @@ module dalligna.com/mictray
 
 go 1.26.1
 
-require (
-	fyne.io/systray v1.12.0
-	github.com/gordonklaus/portaudio v0.0.0-20260203164431-765aa7dfa631
-)
+require fyne.io/systray v1.12.0
 
 require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect

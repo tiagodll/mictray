@@ -2,9 +2,13 @@ package main
 
 import (
 	_ "embed"
+	"os/exec"
+	"strconv"
+	"strings"
+	"sync/atomic"
+	"time"
 
 	"fyne.io/systray"
-	"github.com/gordonklaus/portaudio"
 )
 
 //go:embed redmic.png
@@ -14,16 +18,6 @@ var redIconData []byte
 var grayIconData []byte
 
 func main() {
-	portaudio.Initialize()
-	defer portaudio.Terminate()
-
-	in := make([]int16, 1024)
-	stream, err := portaudio.OpenDefaultStream(1, 0, 44100, len(in), &in)
-	if err != nil {
-		panic(err)
-	}
-	defer stream.Close()
-
 	systray.Run(onReady, onExit)
 }
 
@@ -31,32 +25,41 @@ func onReady() {
 	systray.SetIcon(grayIconData) // Initial gray icon
 	systray.SetTitle("Mic Monitor")
 
-	go func() {
-		in := make([]int16, 1024)
-		stream, _ := portaudio.OpenDefaultStream(1, 0, 44100, len(in), &in)
-		stream.Start()
-		defer stream.Stop()
-		defer stream.Close()
+	var currentVol atomic.Int32
 
-		for {
-			stream.Read()
-			var sum int64
-			for _, v := range in {
-				if v < 0 {
-					v = -v
-				}
-				sum += int64(v)
-			}
-			avg := sum / int64(len(in))
-
-			if avg > 0 { // Threshold > 0
+	systray.SetOnTapped(func() {
+		go func() {
+			if currentVol.Load() == 0 {
+				exec.Command("osascript", "-e", "set volume input volume 100").Run()
+				currentVol.Store(100)
 				systray.SetIcon(redIconData)
 			} else {
+				exec.Command("osascript", "-e", "set volume input volume 0").Run()
+				currentVol.Store(0)
 				systray.SetIcon(grayIconData)
 			}
+		}()
+	})
+
+	go func() {
+		for {
+			cmd := exec.Command("osascript", "-e", "input volume of (get volume settings)")
+			out, err := cmd.Output()
+			if err == nil {
+				volStr := strings.TrimSpace(string(out))
+				vol, err := strconv.Atoi(volStr)
+				if err == nil {
+					currentVol.Store(int32(vol))
+					if vol > 0 {
+						systray.SetIcon(redIconData)
+					} else {
+						systray.SetIcon(grayIconData)
+					}
+				}
+			}
+			time.Sleep(1000 * time.Millisecond)
 		}
 	}()
 }
 
 func onExit() {}
-
