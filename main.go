@@ -41,6 +41,21 @@ func onReady() {
 		}()
 	})
 
+	mAbout := systray.AddMenuItem("About", "Info about MicTray")
+	mQuit := systray.AddMenuItem("Quit", "Quit MicTray")
+
+	go func() {
+		for {
+			select {
+			case <-mAbout.ClickedCh:
+				exec.Command("open", "https://mictray.dalligna.com").Start()
+			case <-mQuit.ClickedCh:
+				systray.Quit()
+				return
+			}
+		}
+	}()
+
 	go func() {
 		for {
 			cmd := exec.Command("osascript", "-e", "input volume of (get volume settings)")
